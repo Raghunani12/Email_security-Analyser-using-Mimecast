@@ -193,7 +193,6 @@ overflow:hidden;
 
 
 
-
 .card,
 .security-panel{
 
@@ -253,7 +252,6 @@ font-size:12px;
 
 
 }
-
 
 
 
@@ -327,7 +325,6 @@ font-size:12px;
 
 
 
-
 .status{
 
 margin-top:15px;
@@ -365,7 +362,6 @@ border-radius:50%;
 background:#16a34a;
 
 }
-
 
 
 
@@ -424,8 +420,6 @@ OCT - Email Security Analyzer
 
 
 
-
-
 <div class="layout">
 
 
@@ -472,7 +466,6 @@ UK
 
 
 
-
 <label>
 Sender
 </label>
@@ -498,7 +491,6 @@ End
 
 
 
-
 <button onclick="connect()">
 Connect
 </button>
@@ -507,7 +499,6 @@ Connect
 <button onclick="searchMessages()">
 Analyze
 </button>
-
 
 
 
@@ -526,10 +517,6 @@ Disconnected
 
 
 </div>
-
-
-
-
 
 
 
@@ -562,8 +549,6 @@ Waiting...
 
 
 
-
-
 <div class="card">
 
 
@@ -582,9 +567,6 @@ No data
 
 
 </div>
-
-
-
 
 
 
@@ -614,10 +596,6 @@ No data
 
 
 
-
-
-
-
 <div class="security-panel">
 
 
@@ -639,7 +617,6 @@ No data
 
 
 
-
 </div>
 
 
@@ -652,16 +629,11 @@ No data
 
 
 
-
-
-
-
 <script>
 
 
 
-const API="http://localhost:5000";
-
+const API="https://emailsecurity-analyser-using-mimecast-production.up.railway.app";
 
 
 
@@ -704,9 +676,6 @@ end.value=saved.end || "";
 
 
 
-
-
-
 function save(){
 
 
@@ -736,9 +705,6 @@ end:end.value
 
 
 }
-
-
-
 
 
 
@@ -790,7 +756,6 @@ await res.json();
 
 
 
-
 if(!data.access_token){
 
 
@@ -808,7 +773,6 @@ localStorage.setItem(
 data.access_token
 
 );
-
 
 
 
@@ -841,12 +805,7 @@ console.log(err);
 }
 
 
-
 }
-
-
-
-
 
 
 
@@ -915,10 +874,6 @@ render(data);
 
 
 
-
-
-
-
 function render(data){
 
 
@@ -937,7 +892,6 @@ if(!msg){
 return;
 
 }
-
 
 
 
@@ -975,7 +929,6 @@ ${msg.to}
 
 
 
-
 headers.innerHTML=
 msg.transmissionInfo;
 
@@ -983,7 +936,6 @@ msg.transmissionInfo;
 
 raw.innerHTML=
 JSON.stringify(data,null,2);
-
 
 
 
@@ -1000,78 +952,35 @@ security.innerHTML=
 
 <div class="security">
 
+<div class="sec">
+<b>SPF</b>
+<br>
+${h.includes("spf=pass") ? "<span class='pass'>PASS</span>" : "<span class='fail'>FAIL</span>"}
+</div>
 
 <div class="sec">
-
-SPF
-
-<br><br>
-
-<span class="${h.includes("spf=pass")?'pass':'fail'}">
-
-${h.includes("spf=pass")?'PASS':'FAIL'}
-
-</span>
-
-
+<b>DKIM</b>
+<br>
+${h.includes("dkim=pass") ? "<span class='pass'>PASS</span>" : "<span class='fail'>FAIL</span>"}
 </div>
-
-
-
 
 <div class="sec">
-
-DKIM
-
-<br><br>
-
-<span class="${h.includes("dkim=pass")?'pass':'fail'}">
-
-${h.includes("dkim=pass")?'PASS':'FAIL'}
-
-</span>
-
-
+<b>DMARC</b>
+<br>
+${h.includes("dmarc=pass") ? "<span class='pass'>PASS</span>" : "<span class='fail'>FAIL</span>"}
 </div>
 
-
-
-
-
-
-<div class="sec">
-
-DMARC
-
-<br><br>
-
-<span class="${h.includes("dmarc=pass")?'pass':'fail'}">
-
-${h.includes("dmarc=pass")?'PASS':'FAIL'}
-
-</span>
-
-
 </div>
-
-
-</div>
-
 
 `;
-
 
 
 }
 
 
 
-
-
 </script>
 
-
-
-
 </body>
+
 </html>
