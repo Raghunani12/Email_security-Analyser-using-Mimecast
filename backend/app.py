@@ -1,7 +1,7 @@
 import os
 from flask import Flask, request, jsonify
 import requests
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import time
 from dotenv import load_dotenv
 
@@ -9,7 +9,14 @@ load_dotenv()
 
 app = Flask(__name__)
 
-CORS(app)
+# Enable CORS with explicit configuration
+CORS(app, resources={
+    r"/api/*": {
+        "origins": "*",
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
 
 # Production configuration
 PORT = int(os.getenv("PORT", 5000))
@@ -31,9 +38,12 @@ token_cache = {
 # GET TOKEN
 # ===========================
 
-@app.route("/api/token", methods=["POST"])
+@app.route("/api/token", methods=["POST", "OPTIONS"])
+@cross_origin()
 def get_token():
 
+    if request.method == "OPTIONS":
+        return "", 200
 
     data = request.json
 
@@ -145,9 +155,12 @@ def get_token():
 # SEARCH + MESSAGE INFO
 # ===========================
 
-@app.route("/api/search", methods=["POST"])
+@app.route("/api/search", methods=["POST", "OPTIONS"])
+@cross_origin()
 def search():
 
+    if request.method == "OPTIONS":
+        return "", 200
 
     data = request.json
 
