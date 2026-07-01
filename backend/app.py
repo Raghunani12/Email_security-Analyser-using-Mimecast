@@ -1,14 +1,19 @@
+import os
 from flask import Flask, request, jsonify
 import requests
 from flask_cors import CORS
 import time
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = Flask(__name__)
 
 CORS(app)
 
-
+# Production configuration
+PORT = int(os.getenv("PORT", 5000))
+DEBUG = os.getenv("FLASK_ENV") == "development"
 
 # ===========================
 # TOKEN CACHE
@@ -18,7 +23,6 @@ token_cache = {
     "token": None,
     "expiry": 0
 }
-
 
 
 
@@ -51,7 +55,6 @@ def get_token():
 
 
 
-
     if (
         token_cache["token"]
         and time.time() < token_cache["expiry"]
@@ -64,8 +67,6 @@ def get_token():
             token_cache["token"]
 
         })
-
-
 
 
 
@@ -116,7 +117,6 @@ def get_token():
 
 
 
-
     token_cache["token"] = result["access_token"]
 
 
@@ -137,10 +137,6 @@ def get_token():
 
 
     return jsonify(result)
-
-
-
-
 
 
 
@@ -223,9 +219,6 @@ def search():
 
 
 
-
-
-
     search_response = requests.post(
 
 
@@ -265,7 +258,6 @@ def search():
 
 
 
-
     tracked_emails = (
 
         search_data
@@ -279,7 +271,6 @@ def search():
 
 
 
-
     if not tracked_emails:
 
 
@@ -289,9 +280,6 @@ def search():
             "No messages found"
 
         })
-
-
-
 
 
 
@@ -310,7 +298,6 @@ def search():
 
 
 
-
     if not message_id:
 
 
@@ -320,11 +307,6 @@ def search():
             "Message ID missing"
 
         })
-
-
-
-
-
 
 
 
@@ -393,14 +375,9 @@ def search():
 
 
 
-
     print("MESSAGE INFO RESPONSE")
 
     print(message_info)
-
-
-
-
 
 
 
@@ -430,12 +407,6 @@ def search():
 
 
 
-
-
-
-
-
-
 # ===========================
 # HEALTH CHECK
 # ===========================
@@ -443,12 +414,12 @@ def search():
 @app.route("/")
 def home():
 
-    return "Mimecast API Running"
+    return jsonify({"status": "Mimecast API Running", "version": "1.0"})
 
+@app.route("/health")
+def health():
 
-
-
-
+    return jsonify({"status": "healthy"})
 
 
 print(app.url_map)
@@ -462,8 +433,8 @@ if __name__=="__main__":
 
         host="0.0.0.0",
 
-        port=5000,
+        port=PORT,
 
-        debug=True
+        debug=DEBUG
 
     )
